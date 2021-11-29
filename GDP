@@ -1,0 +1,50 @@
+module Ratio
+open Mini
+ 
+type Ratio = { numerator: Nat; denominator: Nat }
+ 
+// Definitionen
+let zero = { numerator = 0N ; denominator = 1N }
+let one  = { numerator = 1N ; denominator = 1N }
+let two  = { numerator = 2N ; denominator = 1N }
+ 
+// Konvertiert eine rationale Zahl in eine Fließkommazahl
+let toFloat (a: Ratio): float =
+    (float a.numerator) / (float a.denominator)
+ 
+// a)
+let rec ggt (x: Nat, y: Nat): Nat =
+    if x = 0N then y
+    else if y = 0N then x
+    else if x > y then ggt (x % y,y)
+    else ggt (x,y % x);;
+ 
+let kgv (x: Nat, y: Nat): Nat =
+    x*y/ggt(x,y);;
+ 
+// b)
+let add (a: Ratio, b: Ratio): Ratio =
+  let c = { numerator= (a.numerator*b.denominator+b.numerator*a.denominator)/ggt(a.denominator, b.denominator); denominator= kgv(a.denominator, b.denominator)}
+  {numerator= c.numerator/ggt(c.numerator,c.denominator); denominator= c.denominator/ggt(c.numerator,c.denominator)};;
+ 
+// c)
+let mul (a: Ratio, b: Ratio): Ratio =
+    let c = { numerator= a.numerator*b.numerator; denominator= (a.denominator * b.denominator)}
+    {numerator= c.numerator/ggt(c.numerator,c.denominator); denominator= c.denominator/ggt(c.numerator,c.denominator)};;
+ 
+// d)
+let less (a: Ratio, b: Ratio): Bool =
+    a.numerator*b.denominator < b.numerator*a.denominator;;
+ 
+// e)
+let q1 (n: Nat): Ratio =
+    let rec help (n:Nat, acc:Ratio): Ratio =
+        if n=0N then mul({numerator=2N; denominator=1N},acc)
+        else help (n-1N, mul(acc,add({numerator=1N;denominator=3N},{numerator=n;denominator=2N*n})))
+    help (n, {numerator= 0N; denominator= 0N});;       
+ 
+let q2 (n: Nat): Ratio =
+    let rec help (n:Nat, acc:Ratio): Ratio =
+        if n=0N then mul({numerator=1N; denominator=1N},acc)
+        else help (n-1N, mul(acc,add({numerator=1N;denominator=1N},{numerator=0N;denominator=n})))
+    help (n, {numerator= 0N; denominator= 0N});;    
